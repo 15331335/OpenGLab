@@ -17,7 +17,8 @@ mkdir build
 cd build
 cmake ../.
 make
-cd bin/proj/proj__cloth_simulation
+cd bin/proj
+./proj__cloth_simulation
 ```
 
 （整合这点鬼东西花了我好长时间）
