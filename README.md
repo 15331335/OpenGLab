@@ -6,6 +6,8 @@ The code structure & resources is based on learnopengl.
 
 ## New
 - imgui feature
+
+## List
 - cloth simulation (doing)
 - bezier curve (done)
 
@@ -19,7 +21,7 @@ cd build
 cmake ../.
 make
 cd bin/proj
-./proj__cloth_simulation
+./proj__NAME
 ```
 
 （整合这点鬼东西花了我好长时间）
