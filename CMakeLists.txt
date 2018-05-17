@@ -60,6 +60,7 @@ set(CHAPTERS
 
 set(proj
     cloth_simulation
+    bezier_curve
 )
 
 

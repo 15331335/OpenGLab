@@ -6,7 +6,8 @@ The code structure & resources is based on learnopengl.
 
 ## New
 - imgui feature
-- cloth simulation
+- cloth simulation (doing)
+- bezier curve (done)
 
 
 ## On Mac OS X
