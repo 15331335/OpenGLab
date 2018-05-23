@@ -23,6 +23,9 @@ void set_color();
 void draw_points();
 void draw_bezier_curve();
 
+bool isDrag();
+void move_point();
+
 // settings
 const unsigned int SCR_WIDTH = 1280;
 const unsigned int SCR_HEIGHT = 720;
@@ -44,6 +47,8 @@ float vertices[] = {
     0.0f, 0.0f, 0.0f,  0.0f, 0.0f, 0.0f
 };
 int points_num = 0;
+int draged_point = 0;
+bool dragging = false;
 
 int main() {
     // glfw: initialize and configure
@@ -127,9 +132,8 @@ int main() {
         if (canChangeColor) set_color();
         if (points_num == 4) {
             draw_bezier_curve();
-        } else if (points_num > 0) {
-            draw_points();
         }
+        draw_points();
 
 
         ImGui::Render();
@@ -165,6 +169,9 @@ void mouse_position_callback(GLFWwindow* window, double xpos, double ypos)
     // std::cout << xpos << std::endl;
     lastX = xpos;
     lastY = ypos;
+    if (dragging) {
+        move_point();
+    }
 }
 
 
@@ -174,9 +181,16 @@ void mouse_action_callback(GLFWwindow* window, int button, int action, int mods)
 {
     if (action == GLFW_PRESS && button == GLFW_MOUSE_BUTTON_LEFT) {
         glfwGetCursorPos(window, &lastX, &lastY);
-        add_points();
+        if (points_num < 4) {
+            add_points();
+        } else if (points_num == 4 && isDrag()) {
+            dragging = true;
+        }
     } else if (action == GLFW_PRESS && button == GLFW_MOUSE_BUTTON_RIGHT) {
         delete_points();
+    } else if (action == GLFW_RELEASE) {
+        std::cout << "stop" << std::endl;
+        dragging = false;
     }
 }
 
@@ -241,7 +255,7 @@ void draw_points() {
 
     shader.use();
     glBindVertexArray(VAO);
-    glPointSize(5.0f);
+    glPointSize(10.0f);
     glDrawArrays(GL_POINTS, 0, points_num);
 
     glDeleteVertexArrays(1, &VAO);
@@ -291,3 +305,28 @@ void draw_bezier_curve() {
     glDeleteBuffers(1, &VBO);
 }
 
+
+bool isDrag() {
+    float target_x = (float)(lastX - SCR_WIDTH / 2) / (float)(SCR_WIDTH / 2),
+        target_y = (float)(SCR_HEIGHT / 2 - lastY) / (float)(SCR_HEIGHT / 2);
+
+    std::cout << "targetx: " << target_x << "     targety:" << target_y << std::endl;
+
+    for (int i = 0; i < 4; i++) {
+        float offset_x = target_x - vertices[i*6], offset_y = target_y - vertices[i*6+1];
+        std::cout << "offsetx: " << offset_x << "     offsety: " << offset_y << std::endl;
+        if ((offset_x < 0.005 && offset_x > -0.005) && (offset_y < 0.005 && offset_y > -0.005)) {
+            draged_point = i;
+            std::cout << i << std::endl;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void move_point() {
+    int offset = draged_point * 6;
+    vertices[offset] = (float)(lastX - SCR_WIDTH / 2) / (float)(SCR_WIDTH / 2);
+    vertices[offset + 1] = (float)(SCR_HEIGHT / 2 - lastY) / (float)(SCR_HEIGHT / 2);
+}
