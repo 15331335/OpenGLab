@@ -8,7 +8,7 @@ The code structure & resources is based on learnopengl.
 - imgui feature
 
 ## List
-- cloth simulation (doing)
+- cloth simulation (done)
 - bezier curve (done)
 
 
